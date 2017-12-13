@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<div>上传：
+  <form action="upload.php" method="post" enctype="multipart/form-data" name="form1" id="form1">
+    <input type="file" name="file" id="file" />
+    <input type="submit" name="button" id="button" value="提交" />
+  </form>
+</div>
+<div>
+  <div style="height:30px; padding:5px;">共：{$photos->getPagecount()}页</div>
+  <div>信息总数：{$photos->getTotal()}，每页{$photos->getPagesize()}条，当前第{$photos->getPage()}页，上一页：{$photos->getPrepage()}，下一页：{$photos->getNextpage()}</div>
+  
+  <div><ul>
+  	{foreach $photos->getPages() as $p}
+    <li><a href="?page=1">{$p}</a></li>
+    {/foreach}
+  </ul></div>
+  
+  {foreach $photos->getList() as $photo}
+  <div>
+    <div><img src="upload/{$photo->getPath()}" height="150px" width="150px" /></div>
+    <div>{$photo->getName()}</div>
+    <div>
+    	<ul>
+            {foreach $photo->getTags() as $tag}
+            <li>{$tag}</li>
+            {/foreach}
+          </ul>
+    </div>
+    <div>设置新标签：
+    <form action="tag.php?action=add" method="post" name="form1" id="form1">
+    	<input type="text" name="name" id="name" />
+    	<input type="submit" name="button" id="button" value="提交" />
+  	    <input name="photoid" type="hidden" id="photoid" value="{$photo->getId()}" />
+    </form>
+  	</div>
+    <div>{$photo->getUser()->getName()}</div>
+    <div><a href="photo_config.php?id={$photo->getId()}">设置</a></div>
+  </div>
+  <div>
+  	{foreach $photo->getComments() as $comment}
+    <div>{$comment->getUserid()}：{$comment->getContent()}({$comment->getPubtime()})</div>
+    {/foreach}
+  </div>
+  <form id="form2" name="form2" method="post" action="comment_action.php?action=save">
+  <div>
+  	<div>评论：
+  	  <input type="text" name="content" id="content" />
+  	  <input type="submit" name="button2" id="button2" value="发送" />
+  	  <input name="photoid" type="hidden" id="photoid" value="{$photo->getId()}" />
+  	</div>
+  </div>
+  </form>
+  {/foreach}
+</div>
+</body>
+</html>

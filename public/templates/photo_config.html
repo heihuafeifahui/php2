@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+ <div>
+    <div><img src="upload/{$photo->getPath()}" height="150px" width="150px" /></div>
+    <div>{$photo->getName()}</div>
+    <div>{$photo->getUser()->getName()}</div>
+</div>
+<div>请选择允许查看的用户</div>
+<form id="form1" name="form1" method="post" action="photo_config.php?action=save">
+{foreach $users as $user}
+<div>
+  <div>
+    <input data-userids name="userids[]" type="checkbox" id="userids[]" value="{$user->getId()}" {if $user->getPerm() eq 'read'}checked="checked"{/if} />
+  </div>
+  <div>权限：{$user->getPerm()}</div>
+  <div>{$user->getAccount()}</div>
+  <div>{$user->getName()}</div>
+</div>
+{/foreach}
+<div>
+  <input type="submit" name="button" id="button" value="提交" />
+  <input name="photoid" type="hidden" id="photoid" value="{$photo->getId()}" />
+</div>
+</form>
+</body>
+<script src="js/jquery-3.2.1.min.js"></script>
+{literal}
+<script>
+$(function($){
+	$("[data-userids]").click(function(e) {
+        console.log($(this).prop('checked'));
+		// photo_config.php?action=config_save
+		var photoid = $("#photoid").val();
+		var userid = $(this).val();
+		console.log(photoid);
+		console.log(userid);
+		if ($(this).prop('checked')) {
+			//save
+			$.post("photo_config.php?action=config_save", {photoid:photoid,userid:userid}, function(data){
+				console.log(data);
+			});
+		} else {
+			//del
+			$.post("photo_config.php?action=config_del", {photoid:photoid,userid:userid}, function(data){
+				console.log(data);
+			});
+		}
+    });
+})
+</script>
+{/literal}
+</html>
